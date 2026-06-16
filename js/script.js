@@ -179,3 +179,78 @@ function singupAdmin() {
 
     
 }
+function signupOwner() {
+    var firstName = document.getElementById("firstName").value;
+    var lastName = document.getElementById("lastName").value;
+    var email = document.getElementById("email").value;
+    var phone = document.getElementById("phone").value;
+    var adresse = document.getElementById("adresse").value;
+    var password = document.getElementById("password").value;
+    var confirmPassword = document.getElementById("confirmPassword").value;
+
+    var checkFirstNameValidation = checkLength(firstName, 3);
+    if (!checkFirstNameValidation) {
+        showError("firstNameError", "First name must have at least 3 caracters.");
+    } else {
+        clearError("firstNameError");
+    }
+    var checkLastNameValidation = checkLength(lastName, 3);
+    if (!checkLastNameValidation) {
+        showError("lastNameError", "Last name must have at least 3 caracters.");
+    } else {
+        clearError("lastNameError");
+    }
+    var checkEmailValidation = checkEmail(email);
+    if (!checkEmailValidation) {
+        showError("emailError", "Invalid email format.");
+    } else {
+        clearError("emailError");
+    }
+    var checkPhoneValidation = checkPhone(phone);
+    if (!checkPhoneValidation) {
+        showError("PhoneError", "Phone must have 8 caracters.");
+    } else {
+        clearError("PhoneError");
+    }
+    var checkPasswordValidation = checkLength(password, 5);
+    if (!checkPasswordValidation) {
+        showError("PasswordError", "Password must have at least 5 caracters.");
+    } else {
+        clearError("PasswordError");
+    }
+    var isPasswordMatch = checkPassword(password, confirmPassword);
+    if (!isPasswordMatch) {
+        showError("ConfirmPasswordError", "Passwords do not match.");
+    } else {
+        clearError("ConfirmPasswordError");
+    }
+    var isEmailUnique = checkEmailExists(email);
+    if (isEmailUnique) {
+        showError("EmailUniqueError", "Email must be unique");
+    } else {
+        clearError("EmailUniqueError");
+    }
+    if (checkFirstNameValidation &&
+        checkLastNameValidation &&
+        checkEmailValidation &&
+        checkPhoneValidation &&
+        checkPasswordValidation &&
+        isPasswordMatch &&
+        !isEmailUnique) {
+        var usersTab = JSON.parse(localStorage.getItem("usersHotel")) || [];
+
+        var user = {
+            id: generateId(usersTab),
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phone: phone,
+            adresse: adresse,
+            password: password,
+            role: "admin"
+        }
+        usersTab.push(user);
+        localStorage.setItem("usersHotel", JSON.stringify(usersTab));
+        location.replace("login.html");
+    }
+}
