@@ -117,7 +117,7 @@ function generateId(Tab) {
     return (max + 1);
 }
 function singupAdmin() {
-   
+
     var firstName = document.getElementById("firstName").value;
     var lastName = document.getElementById("lastName").value;
     var email = document.getElementById("email").value;
@@ -177,7 +177,7 @@ function singupAdmin() {
         location.replace("login.html");
     }
 
-    
+
 }
 function signupOwner() {
     var firstName = document.getElementById("firstName").value;
@@ -253,4 +253,31 @@ function signupOwner() {
         localStorage.setItem("usersHotel", JSON.stringify(usersTab));
         location.replace("login.html");
     }
+}
+function login() {
+    var email = document.getElementById("email").value;
+    var password = document.getElementById("password").value;
+
+    var foundedUser = {};
+    var usersTab = JSON.parse(localStorage.getItem("usersHotel")) || [];
+    for (let i = 0; i < usersTab.length; i++) {
+        if (usersTab[i].email === email && usersTab[i].password === password) {
+            foundedUser = usersTab[i];
+            break;
+        }
+    }
+    if (foundedUser) {
+        localStorage.setItem("connectedUserId", JSON.stringify(foundedUser.id));
+
+        if (foundedUser.role === "client") {
+            location.replace("hotels.html");
+        } else if (foundedUser.role === "owner") {
+            location.replace("store.html");
+        } else {
+            location.replace("admin.html");
+        }
+    } else {
+        showError("loginError", "Invalid email or password.");
+    }
+
 }
