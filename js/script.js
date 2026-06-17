@@ -303,7 +303,7 @@ function displayAllUsers() {
                                     <button class="btn btn-orange btn-sm" onclick="ValidateOwner(${usersTab[i].id})">
                                         <i class="fa fa-check"></i> Validate
                                     </button>
-                                    <button class="btn btn-lightgrey btn-sm" >
+                                    <button class="btn btn-lightgrey btn-sm" onclick="deleteUser(${usersTab[i].id})" >
                                         <i class="fa fa-trash"></i> Delete
                                     </button>
                                  </td>
@@ -317,12 +317,11 @@ function displayAllUsers() {
                                 <td> ${usersTab[i].role}</td>
                                 <td> ${usersTab[i].status || "--"}</td>
                                 <td class="text-center">
-                                    <button class="btn btn-lightgrey btn-sm">
+                                    <button class="btn btn-lightgrey btn-sm" onclick="deleteUser(${usersTab[i].id})">
                                         <i class="fa fa-trash"></i> Delete
                                     </button>
                                  </td>
                             </tr>`
-
             }
 
         }
@@ -337,6 +336,20 @@ function ValidateOwner(id) {
             break;
         }
     }
+    localStorage.setItem("usersHotel", JSON.stringify(usersTab));
+    displayAllUsers();
+
+}
+function deleteUser(id) {
+    var usersTab = JSON.parse(localStorage.getItem("usersHotel")) || [];
+    var position;
+    for (let i = 0; i < usersTab.length; i++) {
+        if (Number(usersTab[i].id == id)) {
+            position = i;
+            break;
+        }
+    }
+    usersTab.splice(position, 1);
     localStorage.setItem("usersHotel", JSON.stringify(usersTab));
     displayAllUsers();
 
