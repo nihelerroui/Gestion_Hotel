@@ -247,7 +247,8 @@ function signupOwner() {
             phone: phone,
             adresse: adresse,
             password: password,
-            role: "admin"
+            role: "owner",
+            status: "notValidated"
         }
         usersTab.push(user);
         localStorage.setItem("usersHotel", JSON.stringify(usersTab));
@@ -272,12 +273,71 @@ function login() {
         if (foundedUser.role === "client") {
             location.replace("hotels.html");
         } else if (foundedUser.role === "owner") {
-            location.replace("store.html");
+            if (foundedUser.status == "notValidated") {
+                showError("loginError", "Your account is not validated yet. Please wait for the admin approval.")
+            } else {
+                location.replace("store.html");
+            }
         } else {
-            location.replace("admin.html");
+            location.replace("dashboardAdmin.html");
         }
     } else {
         showError("loginError", "Invalid email or password.");
     }
+
+}
+function displayAllUsers() {
+    var usersTab = JSON.parse(localStorage.getItem("usersHotel")) || [];
+    var content = "";
+    for (let i = 0; i < usersTab.length; i++) {
+        if (usersTab[i].role !== "admin") {
+            if (usersTab[i].role == "owner" && usersTab[i].status == "notValidated") {
+                content += `<tr>
+                                <td> ${usersTab[i].id}</td>
+                                <td> ${usersTab[i].firstName}</td>
+                                <td> ${usersTab[i].lastName}</td>
+                                <td> ${usersTab[i].email}</td>
+                                <td> ${usersTab[i].role}</td>
+                                <td> ${usersTab[i].status}</td>
+                                <td class="text-center">
+                                    <button class="btn btn-orange btn-sm" onclick="ValidateOwner(${usersTab[i].id})">
+                                        <i class="fa fa-check"></i> Validate
+                                    </button>
+                                    <button class="btn btn-lightgrey btn-sm" >
+                                        <i class="fa fa-trash"></i> Delete
+                                    </button>
+                                 </td>
+                            </tr>`
+            } else {
+                content += `<tr>
+                                <td> ${usersTab[i].id}</td>
+                                <td> ${usersTab[i].firstName}</td>
+                                <td> ${usersTab[i].lastName}</td>
+                                <td> ${usersTab[i].email}</td>
+                                <td> ${usersTab[i].role}</td>
+                                <td> ${usersTab[i].status || "--"}</td>
+                                <td class="text-center">
+                                    <button class="btn btn-lightgrey btn-sm">
+                                        <i class="fa fa-trash"></i> Delete
+                                    </button>
+                                 </td>
+                            </tr>`
+
+            }
+
+        }
+        document.getElementById("usersList").innerHTML = content;
+    }
+}
+function ValidateOwner(id) {
+    var usersTab = JSON.parse(localStorage.getItem("usersHotel")) || [];
+    for (let i = 0; i < usersTab.length; i++) {
+        if (Number(usersTab[i].id == id)) {
+            usersTab[i].status = "Validated";
+            break;
+        }
+    }
+    localStorage.setItem("usersHotel", JSON.stringify(usersTab));
+    displayAllUsers();
 
 }
