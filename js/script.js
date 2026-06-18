@@ -431,3 +431,105 @@ function checkNumber(nb) {
 function checkNumberRoom(nb){
     return Number(nb) > 0 && Number(nb) <= 5;
 }
+function addRoom() {
+    var roomGuestHouse = document.getElementById("roomGuestHouse").value;
+    var roomName = document.getElementById("roomName").value;
+    var roomType = document.getElementById("roomType").value;
+    var roomCapacity = document.getElementById("roomCapacity").value;
+    var roomPrice = document.getElementById("roomPrice").value;
+    var roomAvailability = document.getElementById("roomAvailability").value;
+    var roomImage = document.getElementById("roomImage").value;
+    var roomDescription = document.getElementById("roomDescription").value;
+
+    var guestHouseValidate = roomGuestHouse != "";
+    if (!guestHouseValidate) {
+        showError("guestHouseError", "Please select a guest house.");
+    } else {
+        clearError("guestHouseError");
+    }
+
+    var roomNameValidate = checkLength(roomName, 2);
+    if (!roomNameValidate) {
+        showError("roomNameError", "Room name must have at least 2 characters.");
+    } else {
+        clearError("roomNameError");
+    }
+
+    var roomTypeValidate = checkLength(roomType, 1);
+    if (!roomTypeValidate) {
+        showError("roomTypeError", "Please select a room type.");
+    } else {
+        clearError("roomTypeError");
+    }
+
+    var capacityValidate = checkNumber(roomCapacity, 1);
+    if (!capacityValidate) {
+        showError("capacityError", "Capacity must be greater than 0.");
+    } else {
+        clearError("capacityError");
+    }
+
+    var priceValidate = checkNumber(roomPrice, 1);
+    if (!priceValidate) {
+        showError("roomPriceError", "Price must be greater than 0.");
+    } else {
+        clearError("roomPriceError");
+    }
+
+    var availabilityValidate = checkLength(roomAvailability, 1);
+    if (!availabilityValidate) {
+        showError("availabilityError", "Please select availability.");
+    } else {
+        clearError("availabilityError");
+    }
+
+    var descriptionValidate = checkLength(roomDescription, 10);
+    if (!descriptionValidate) {
+        showError("roomDescriptionError", "Description must have at least 10 characters.");
+    } else {
+        clearError("roomDescriptionError");
+    }
+
+    if (guestHouseValidate && roomNameValidate && roomTypeValidate && capacityValidate && priceValidate && availabilityValidate && descriptionValidate
+    ) {
+        var roomsTab =JSON.parse(localStorage.getItem("rooms")) || [];
+        var connectedUserId = localStorage.getItem("connectedUserId");
+        var room = {
+            id: generateId(roomsTab),
+            guestHouseId: roomGuestHouse,
+            roomName : roomName,
+            roomType : roomType,
+            roomCapacity : roomCapacity,
+            roomPrice : roomPrice,
+            roomAvailability : roomAvailability,
+            roomImage : roomImage,
+            roomDescription : roomDescription,
+            ownerId : connectedUserId
+        }
+        roomsTab.push(room);
+        localStorage.setItem("rooms", JSON.stringify(roomsTab));
+    }
+    
+}
+function loadGuestHouses() {
+    var guestHouses = JSON.parse(localStorage.getItem("guestHouses")) || [];
+    var connectedUserId = localStorage.getItem("connectedUserId");
+
+    var roomGuestHouse = document.getElementById("roomGuestHouse");
+
+    roomGuestHouse.innerHTML = '<option value="">Select Guest House</option>';
+
+    if (!connectedUserId) {
+        return;
+    }
+
+    for (var i = 0; i < guestHouses.length; i++) {
+        if (guestHouses[i].ownerId == connectedUserId) {
+            roomGuestHouse.innerHTML += `
+                <option value="${guestHouses[i].id}">
+                    ${guestHouses[i].guestHouseName} - ${guestHouses[i].guestHouseCity}
+                </option>
+            `;
+        }
+    }
+}

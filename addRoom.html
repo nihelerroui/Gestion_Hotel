@@ -698,9 +698,8 @@
                                             <label>Guest House</label>
                                             <select class="form-control" id="roomGuestHouse" name="roomGuestHouse">
                                                 <option value="">Select Guest House</option>
-                                                <option value="Dar El Medina">Dar El Medina</option>
-                                                <option value="Dar Hammamet">Dar Hammamet</option>
                                             </select>
+                                            <script>loadGuestHouses()</script>
                                             <span id="guestHouseError"></span>
                                         </div>
                                     </div>
@@ -783,6 +782,7 @@
                                             <label>Description</label>
                                             <textarea class="form-control" rows="4" id="roomDescription"
                                                 name="roomDescription" placeholder="Room description"></textarea>
+                                            <span id="roomDescriptionError"></span>
                                         </div>
                                     </div>
                                 </div>
