@@ -30,6 +30,7 @@
 
     <!--Date-Picker Stylesheet-->
     <link rel="stylesheet" href="css/datepicker.css">
+    <script src="js/script.js"></script>
 </head>
 
 
@@ -696,6 +697,7 @@
                                             <label>Guest House Name</label>
                                             <input type="text" class="form-control" id="guestHouseName"
                                                 name="guestHouseName" placeholder="Ex: Dar El Medina">
+                                                <span id="nameError"></span>
                                         </div>
                                     </div>
 
@@ -722,6 +724,7 @@
                                             <label>Phone Number</label>
                                             <input type="text" class="form-control" id="guestHousePhone"
                                                 name="guestHousePhone" placeholder="Ex: +216 22 000 000">
+                                            <span id="phoneError"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -732,6 +735,8 @@
                                             <label>Email Address</label>
                                             <input type="email" class="form-control" id="guestHouseEmail"
                                                 name="guestHouseEmail" placeholder="contact@email.com">
+                                            <span id="emailError"></span>
+                                            <span id="EmailUniqueError"></span>
                                         </div>
                                     </div>
 
@@ -740,6 +745,7 @@
                                             <label>Price per Night</label>
                                             <input type="number" class="form-control" id="guestHousePrice"
                                                 name="guestHousePrice" placeholder="Ex: 120">
+                                            <span id="priceError"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -750,6 +756,7 @@
                                             <label>Number of Rooms</label>
                                             <input type="number" class="form-control" id="guestHouseRooms"
                                                 name="guestHouseRooms" placeholder="Ex: 5">
+                                            <span id="roomsError"></span>
                                         </div>
                                     </div>
 

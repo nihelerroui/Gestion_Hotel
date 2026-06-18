@@ -354,3 +354,80 @@ function deleteUser(id) {
     displayAllUsers();
 
 }
+function addGuestHouse() {
+    var guestHouseName = document.getElementById("guestHouseName").value;
+    var guestHouseCity = document.getElementById("guestHouseCity").value;
+    var guestHouseAddress = document.getElementById("guestHouseAddress").value;
+    var guestHousePhone = document.getElementById("guestHousePhone").value;
+    var guestHouseEmail = document.getElementById("guestHouseEmail").value;
+    var guestHousePrice = document.getElementById("guestHousePrice").value;
+    var guestHouseRooms = document.getElementById("guestHouseRooms").value;
+    var guestHouseImage = document.getElementById("guestHouseImage").value;
+    var guestHouseDescription = document.getElementById("guestHouseDescription").value;
+
+    var nameValidate = checkLength(guestHouseName, 4);
+    if(!nameValidate){
+        showError("nameError", "Name must have at least 4 caracters.")
+    } else {
+        clearError("nameError")
+    }
+    var phoneValidate = checkPhone(guestHousePhone);
+    if(!phoneValidate){
+        showError("phoneError", "phone must have 8 caracters.")
+    } else {
+        clearError("phoneError")
+    }
+    var emailVlaidate = checkEmail(guestHouseEmail);
+    if(!emailVlaidate){
+        showError("emailError", "Invalid email format.")
+    } else {
+        clearError("emailError")
+    }
+    var emailUnique = checkEmailExists(guestHouseEmail);
+    if(emailUnique){
+        showError("EmailUniqueError", "Email must be unique");    
+    } else {
+        clearError("EmailUniqueError")
+    }
+    var priceValidate = checkNumber(guestHousePrice);
+    if(!priceValidate){
+        showError("priceError", "Price must be greater than 0.")
+    } else {
+        clearError("priceError")
+    }
+    var nbChambreValidate = checkNumberRoom(guestHouseRooms);
+    if(!nbChambreValidate){
+        showError("roomsError", "The maximum number of rooms is 5.")
+    } else {
+        clearError("roomsError")
+    }
+    if (nameValidate && phoneValidate && emailVlaidate && priceValidate && nbChambreValidate && !emailUnique) {
+        var guestHouseTabs = JSON.parse(localStorage.getItem("guestHouses")) || [];
+        var connectedUserId = localStorage.getItem("connectedUserId");
+
+        var guestHouse = {
+            id : generateId(guestHouseTabs),
+            guestHouseName : guestHouseName,
+            guestHouseCity : guestHouseCity,
+            guestHouseAddress : guestHouseAddress,
+            guestHousePhone : guestHousePhone,
+            guestHouseEmail : guestHouseEmail,
+            guestHousePrice : guestHousePrice,
+            guestHouseRooms : guestHouseRooms,
+            guestHouseImage : guestHouseImage,
+            guestHouseDescription : guestHouseDescription,
+            ownerId : connectedUserId
+        }
+        console.log(guestHouse);
+        guestHouseTabs.push(guestHouse);
+        localStorage.setItem("guestHouses", JSON.stringify(guestHouseTabs));
+        
+    }
+
+}
+function checkNumber(nb) {
+    return nb > 0;
+}
+function checkNumberRoom(nb){
+    return Number(nb) > 0 && Number(nb) <= 5;
+}
