@@ -610,10 +610,11 @@ function displayAllHotels() {
                         <p>${truncateText(hotelsTab[i].guestHouseDescription, 80)}</p>
 
                         <div class="grid-btn">
-                            <a href="hotel-detail-left-sidebar.html?id=${hotelsTab[i].id}" 
+                            <button type="button"
+                            onclick="goToDisplay(${hotelsTab[i].id})"
                                class="btn btn-orange btn-block btn-lg">
                                 View More
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -633,4 +634,9 @@ function truncateText(text, maxLength) {
     }
 
     return text.substring(0, maxLength) + "...";
+}
+function goToDisplay(id) {
+    var HouseId = JSON.stringify(localStorage.setItem("displayHotelId", id));
+    window.location.href = "detail-house.html"
+    
 }
