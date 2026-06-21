@@ -638,5 +638,76 @@ function truncateText(text, maxLength) {
 function goToDisplay(id) {
     var HouseId = JSON.stringify(localStorage.setItem("displayHotelId", id));
     window.location.href = "detail-house.html"
-    
+
+}
+function displayAllRoomsByHouse() {
+    var roomsTab = JSON.parse(localStorage.getItem("rooms")) || [];
+    var houseId = localStorage.getItem("displayHotelId");
+    var content = "";
+    for (let i = 0; i < roomsTab.length; i++) {
+        if (roomsTab[i].guestHouseId == houseId) {
+            var image = roomsTab[i].roomImage
+                ? roomsTab[i].roomImage
+                : "images/available-room-1.jpg";
+            content += `<div class="list-block main-block room-block">
+                    <div class="list-content">
+                        <div class="main-img list-img room-img">
+                            <a href="#">
+                                <img src="${image}" class="img-responsive room-card-img" alt="room-img" />
+                            </a>
+
+                            <div class="main-mask">
+                                <ul class="list-unstyled list-inline offer-price-1">
+                                    <li class="list-inline-item price">
+                                        $${roomsTab[i].roomPrice}
+                                        <span class="divider">|</span>
+                                        <span class="pkg">Per Night</span>
+                                    </li>
+
+                                    <li class="list-inline-item rating">
+                                        <span><i class="fa fa-star orange"></i></span>
+                                        <span><i class="fa fa-star orange"></i></span>
+                                        <span><i class="fa fa-star orange"></i></span>
+                                        <span><i class="fa fa-star orange"></i></span>
+                                        <span><i class="fa fa-star lightgrey"></i></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="list-info room-info">
+                            <h3 class="block-title">
+                                <a href="#">
+                                    ${roomsTab[i].roomName}
+                                </a>
+                            </h3>
+
+                            <p class="block-minor">
+                                Type: ${roomsTab[i].roomType}
+                            </p>
+
+                            <p class="block-minor">
+                                Max Guests: ${roomsTab[i].roomCapacity}
+                            </p>
+
+                            <p class="block-minor">
+                                Availability: ${roomsTab[i].roomAvailability}
+                            </p>
+
+                            <p>
+                                ${truncateText(roomsTab[i].roomDescription, 120)}
+                            </p>
+
+                            <a href="#" class="btn btn-orange btn-lg">
+                                View More
+                            </a>
+                        </div>
+                    </div>
+                </div>`
+
+        }
+
+    }
+    document.getElementById("RoomsListId").innerHTML = content;
+
 }
