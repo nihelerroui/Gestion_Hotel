@@ -559,3 +559,78 @@ function loadGuestHouses() {
         }
     }
 }
+function displayAllHotels() {
+    var hotelsTab = JSON.parse(localStorage.getItem("guestHouses")) || [];
+    var content = "";
+
+    for (let i = 0; i < hotelsTab.length; i++) {
+
+        var image = hotelsTab[i].guestHouseImage
+            ? hotelsTab[i].guestHouseImage
+            : "images/hotel-grid-1.jpg";
+
+        content += `
+            <div class="col-md-6 col-lg-6 col-xl-4">
+                <div class="grid-block main-block h-grid-block">
+                    <div class="main-img h-grid-img">
+                        <a href="hotel-detail-left-sidebar.html?id=${hotelsTab[i].id}">
+                            <img src="${image}" class="img-fluid hotel-card-img" alt="hotel-img" />
+                        </a>
+
+                        <div class="main-mask">
+                            <ul class="list-unstyled list-inline offer-price-1">
+                                <li class="price">
+                                    $${hotelsTab[i].guestHousePrice}
+                                    <span class="divider">|</span>
+                                    <span class="pkg">Avg/Night</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="block-info h-grid-info">
+                        <div class="rating">
+                            <span><i class="fa fa-star orange"></i></span>
+                            <span><i class="fa fa-star orange"></i></span>
+                            <span><i class="fa fa-star orange"></i></span>
+                            <span><i class="fa fa-star orange"></i></span>
+                            <span><i class="fa fa-star lightgrey"></i></span>
+                        </div>
+                        
+                        <h3 class="block-title">
+                            <a href="hotel-detail-left-sidebar.html?id=${hotelsTab[i].id}">
+                                ${hotelsTab[i].guestHouseName}
+                            </a>
+                        </h3>
+
+                        <p class="block-minor">
+                            From: ${hotelsTab[i].guestHouseCity}
+                        </p>
+
+                        <p>${truncateText(hotelsTab[i].guestHouseDescription, 80)}</p>
+
+                        <div class="grid-btn">
+                            <a href="hotel-detail-left-sidebar.html?id=${hotelsTab[i].id}" 
+                               class="btn btn-orange btn-block btn-lg">
+                                View More
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    document.getElementById("hotelsContent").innerHTML = content;
+}
+function truncateText(text, maxLength) {
+    if (!text) {
+        return "";
+    }
+
+    if (text.length <= maxLength) {
+        return text;
+    }
+
+    return text.substring(0, maxLength) + "...";
+}
