@@ -362,73 +362,85 @@ function addGuestHouse() {
     var guestHouseEmail = document.getElementById("guestHouseEmail").value;
     var guestHousePrice = document.getElementById("guestHousePrice").value;
     var guestHouseRooms = document.getElementById("guestHouseRooms").value;
-    var guestHouseImage = document.getElementById("guestHouseImage").value;
     var guestHouseDescription = document.getElementById("guestHouseDescription").value;
 
+    var imageInput = document.getElementById("guestHouseImage");
+    var imageFile = imageInput.files[0];
+
     var nameValidate = checkLength(guestHouseName, 4);
-    if(!nameValidate){
+    if (!nameValidate) {
         showError("nameError", "Name must have at least 4 caracters.")
     } else {
         clearError("nameError")
     }
     var phoneValidate = checkPhone(guestHousePhone);
-    if(!phoneValidate){
+    if (!phoneValidate) {
         showError("phoneError", "phone must have 8 caracters.")
     } else {
         clearError("phoneError")
     }
     var emailVlaidate = checkEmail(guestHouseEmail);
-    if(!emailVlaidate){
+    if (!emailVlaidate) {
         showError("emailError", "Invalid email format.")
     } else {
         clearError("emailError")
     }
     var emailUnique = checkEmailExists(guestHouseEmail);
-    if(emailUnique){
-        showError("EmailUniqueError", "Email must be unique");    
+    if (emailUnique) {
+        showError("EmailUniqueError", "Email must be unique");
     } else {
         clearError("EmailUniqueError")
     }
     var priceValidate = checkNumber(guestHousePrice);
-    if(!priceValidate){
+    if (!priceValidate) {
         showError("priceError", "Price must be greater than 0.")
     } else {
         clearError("priceError")
     }
     var nbChambreValidate = checkNumberRoom(guestHouseRooms);
-    if(!nbChambreValidate){
+    if (!nbChambreValidate) {
         showError("roomsError", "The maximum number of rooms is 5.")
     } else {
         clearError("roomsError")
     }
-    if (nameValidate && phoneValidate && emailVlaidate && priceValidate && nbChambreValidate && !emailUnique) {
-        var guestHouseTabs = JSON.parse(localStorage.getItem("guestHouses")) || [];
-        var connectedUserId = localStorage.getItem("connectedUserId");
+    var imageValidate = imageFile != undefined;
+    if (!imageValidate) {
+        showError("imageError", "Please select an image.");
+    } else {
+        clearError("imageError");
+    }
+    if (nameValidate && phoneValidate && emailVlaidate && priceValidate && nbChambreValidate && !emailUnique && imageValidate) {
+        var reader = new FileReader();
 
-        var guestHouse = {
-            id : generateId(guestHouseTabs),
-            guestHouseName : guestHouseName,
-            guestHouseCity : guestHouseCity,
-            guestHouseAddress : guestHouseAddress,
-            guestHousePhone : guestHousePhone,
-            guestHouseEmail : guestHouseEmail,
-            guestHousePrice : guestHousePrice,
-            guestHouseRooms : guestHouseRooms,
-            guestHouseImage : guestHouseImage,
-            guestHouseDescription : guestHouseDescription,
-            ownerId : connectedUserId
+        reader.onload = function () {
+            var guestHouseTabs = JSON.parse(localStorage.getItem("guestHouses")) || [];
+            var connectedUserId = localStorage.getItem("connectedUserId");
+
+            var guestHouse = {
+                id: generateId(guestHouseTabs),
+                guestHouseName: guestHouseName,
+                guestHouseCity: guestHouseCity,
+                guestHouseAddress: guestHouseAddress,
+                guestHousePhone: guestHousePhone,
+                guestHouseEmail: guestHouseEmail,
+                guestHousePrice: guestHousePrice,
+                guestHouseRooms: guestHouseRooms,
+                guestHouseImage: reader.result,
+                guestHouseDescription: guestHouseDescription,
+                ownerId: connectedUserId
+            }
+            guestHouseTabs.push(guestHouse);
+            localStorage.setItem("guestHouses", JSON.stringify(guestHouseTabs));
         }
-        console.log(guestHouse);
-        guestHouseTabs.push(guestHouse);
-        localStorage.setItem("guestHouses", JSON.stringify(guestHouseTabs));
-        
+        reader.readAsDataURL(imageFile)
+
     }
 
 }
 function checkNumber(nb) {
     return nb > 0;
 }
-function checkNumberRoom(nb){
+function checkNumberRoom(nb) {
     return Number(nb) > 0 && Number(nb) <= 5;
 }
 function addRoom() {
@@ -492,24 +504,24 @@ function addRoom() {
 
     if (guestHouseValidate && roomNameValidate && roomTypeValidate && capacityValidate && priceValidate && availabilityValidate && descriptionValidate
     ) {
-        var roomsTab =JSON.parse(localStorage.getItem("rooms")) || [];
+        var roomsTab = JSON.parse(localStorage.getItem("rooms")) || [];
         var connectedUserId = localStorage.getItem("connectedUserId");
         var room = {
             id: generateId(roomsTab),
             guestHouseId: roomGuestHouse,
-            roomName : roomName,
-            roomType : roomType,
-            roomCapacity : roomCapacity,
-            roomPrice : roomPrice,
-            roomAvailability : roomAvailability,
-            roomImage : roomImage,
-            roomDescription : roomDescription,
-            ownerId : connectedUserId
+            roomName: roomName,
+            roomType: roomType,
+            roomCapacity: roomCapacity,
+            roomPrice: roomPrice,
+            roomAvailability: roomAvailability,
+            roomImage: roomImage,
+            roomDescription: roomDescription,
+            ownerId: connectedUserId
         }
         roomsTab.push(room);
         localStorage.setItem("rooms", JSON.stringify(roomsTab));
     }
-    
+
 }
 function loadGuestHouses() {
     var guestHouses = JSON.parse(localStorage.getItem("guestHouses")) || [];
