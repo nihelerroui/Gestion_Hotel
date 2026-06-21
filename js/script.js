@@ -450,8 +450,10 @@ function addRoom() {
     var roomCapacity = document.getElementById("roomCapacity").value;
     var roomPrice = document.getElementById("roomPrice").value;
     var roomAvailability = document.getElementById("roomAvailability").value;
-    var roomImage = document.getElementById("roomImage").value;
     var roomDescription = document.getElementById("roomDescription").value;
+
+    var imageInput = document.getElementById("roomImage");
+    var imageFile = imageInput.files[0];
 
     var guestHouseValidate = roomGuestHouse != "";
     if (!guestHouseValidate) {
@@ -502,24 +504,36 @@ function addRoom() {
         clearError("roomDescriptionError");
     }
 
-    if (guestHouseValidate && roomNameValidate && roomTypeValidate && capacityValidate && priceValidate && availabilityValidate && descriptionValidate
+    var imageValidate = imageFile != undefined;
+    if (!imageValidate) {
+        showError("imageError", "Please select an image.");
+    } else {
+        clearError("imageError");
+    }
+
+    if (guestHouseValidate && roomNameValidate && roomTypeValidate && capacityValidate && priceValidate && availabilityValidate && descriptionValidate && imageValidate
     ) {
-        var roomsTab = JSON.parse(localStorage.getItem("rooms")) || [];
-        var connectedUserId = localStorage.getItem("connectedUserId");
-        var room = {
-            id: generateId(roomsTab),
-            guestHouseId: roomGuestHouse,
-            roomName: roomName,
-            roomType: roomType,
-            roomCapacity: roomCapacity,
-            roomPrice: roomPrice,
-            roomAvailability: roomAvailability,
-            roomImage: roomImage,
-            roomDescription: roomDescription,
-            ownerId: connectedUserId
+        var reader = new FileReader();
+
+        reader.onload = function () {
+            var roomsTab = JSON.parse(localStorage.getItem("rooms")) || [];
+            var connectedUserId = localStorage.getItem("connectedUserId");
+            var room = {
+                id: generateId(roomsTab),
+                guestHouseId: roomGuestHouse,
+                roomName: roomName,
+                roomType: roomType,
+                roomCapacity: roomCapacity,
+                roomPrice: roomPrice,
+                roomAvailability: roomAvailability,
+                roomImage: reader.result,
+                roomDescription: roomDescription,
+                ownerId: connectedUserId
+            }
+            roomsTab.push(room);
+            localStorage.setItem("rooms", JSON.stringify(roomsTab));
         }
-        roomsTab.push(room);
-        localStorage.setItem("rooms", JSON.stringify(roomsTab));
+        reader.readAsDataURL(imageFile);
     }
 
 }
