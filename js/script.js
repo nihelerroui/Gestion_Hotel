@@ -898,3 +898,66 @@ function displayRoom() {
     document.getElementById("detailRoom").innerHTML = content + booking;
     
 }
+function confirmRoomBooking() {
+    var roomsTab = JSON.parse(localStorage.getItem("rooms")) || [];
+    var roomId = localStorage.getItem("displayRoomId");
+    var connectedUserId = localStorage.getItem("connectedUserId");
+
+    var places = document.getElementById("bookingPlaces").value;
+    var startdate = document.getElementById("bookingStartDate").value;
+    var endDate = document.getElementById("bookingEndDate").value;
+    var foundedRoom = {};
+
+    for (let i = 0; i < roomsTab.length; i++) {
+        if (roomsTab[i].id == roomId) {
+            foundedRoom = roomsTab[i];
+            break;
+        } 
+    }
+    var placesValidate =  validateRequired(places, "placesError", "Number of places is required.");
+    places = Number(places);
+    var capacityValidate = validateMax(places, foundedRoom.roomCapacity, "capacityError", "Number of places exceeds room capacity.");
+    var startDateValidate = validateRequired(startdate, "startDateError", "Please select  start date.") ;
+    var endDateValidate = validateRequired(endDate, "endDateError", "Please select  end date.");
+    var dateValidate = validateDateRange(startdate, endDate, "dateError","End date must be after start date");
+    if (placesValidate && capacityValidate && startDateValidate && endDateValidate && dateValidate ) {
+        var bookingTab = JSON.parse(localStorage.getItem("bookings")) || [];
+        var booking = {
+            id: generateId(bookingTab),  
+            roomId: roomId,
+            places: places,
+            startDate: startdate,
+            endDate: endDate,
+            idClient: connectedUserId
+        };
+        bookingTab.push(booking);
+        localStorage.setItem("bookings", JSON.stringify(bookingTab));   
+    }
+}
+function validateRequired(value, errorId, message) {
+    if (!value || value.trim() === "") {
+        showError(errorId, message);
+        return false;
+    } else {
+        clearError(errorId);
+        return true;
+    }
+}
+function validateMax(value, max, errorId, message) {
+    if (Number(value) > Number(max)) {
+        showError(errorId, message);
+        return false;
+    } else {
+        clearError(errorId);
+        return true;
+    }
+}
+function validateDateRange(start, end, errorId, message) {
+    if (new Date(start) >= new Date(end)) {
+        showError(errorId, message);
+        return false;
+    } else {
+        clearError(errorId);
+        return true;
+    }
+}
