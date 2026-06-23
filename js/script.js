@@ -698,16 +698,203 @@ function displayAllRoomsByHouse() {
                                 ${truncateText(roomsTab[i].roomDescription, 120)}
                             </p>
 
-                            <a href="#" class="btn btn-orange btn-lg">
+                            <button type="button" class="btn btn-orange btn-lg" onclick="goToDisplayRoom(${roomsTab[i].id})">
                                 View More
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>`
+                
 
         }
 
     }
     document.getElementById("RoomsListId").innerHTML = content;
 
+}
+function goToDisplayRoom(id) {
+    var displayRoomId = JSON.stringify(localStorage.setItem("displayRoomId", id));
+    window.location.href = "detail-room.html";
+}
+function displayRoom() {
+    var roomsTab = JSON.parse(localStorage.getItem("rooms")) || [];
+    var displayRoomId = localStorage.getItem("displayRoomId");
+    var content = "";
+    var booking = "";
+
+    for (let i = 0; i < roomsTab.length; i++) {
+        if (roomsTab[i].id == displayRoomId) {
+
+            var room = roomsTab[i];
+
+            var image = room.roomImage
+                ? room.roomImage
+                : "images/available-room-1.jpg";
+
+            content = `
+                <div class="detail-tabs">
+                    <ul class="nav nav-tabs nav-justified">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#room-overview" data-bs-toggle="tab">
+                                Room Overview
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#room-capacity" data-bs-toggle="tab">
+                                Capacity
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#room-price" data-bs-toggle="tab">
+                                Price
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#room-availability" data-bs-toggle="tab">
+                                Availability
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+
+                        <div id="room-overview" class="tab-pane active">
+                            <div class="row">
+                                <div class="col-md-4 tab-img">
+                                    <img src="${image}" class="img-responsive room-detail-img" alt="room-img" />
+                                </div>
+
+                                <div class="col-md-8 tab-text">
+                                    <h3>${room.roomName}</h3>
+                                    <p>${room.roomDescription}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="room-capacity" class="tab-pane">
+                            <div class="row">
+                                <div class="col-md-4 tab-img">
+                                    <img src="${image}" class="img-responsive room-detail-img" alt="room-img" />
+                                </div>
+
+                                <div class="col-md-8 tab-text">
+                                    <h3>Room Capacity</h3>
+                                    <p>
+                                        This room can accept a maximum of 
+                                        <strong>${room.roomCapacity}</strong> guest(s).
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="room-price" class="tab-pane">
+                            <div class="row">
+                                <div class="col-md-4 tab-img">
+                                    <img src="${image}" class="img-responsive room-detail-img" alt="room-img" />
+                                </div>
+
+                                <div class="col-md-8 tab-text">
+                                    <h3>Room Price</h3>
+                                    <p>
+                                        Price per night: 
+                                        <strong>$${room.roomPrice}</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="room-availability" class="tab-pane">
+                            <div class="row">
+                                <div class="col-md-4 tab-img">
+                                    <img src="${image}" class="img-responsive room-detail-img" alt="room-img" />
+                                </div>
+
+                                <div class="col-md-8 tab-text">
+                                    <h3>Availability</h3>
+                                    <p>
+                                        Current availability: 
+                                        <strong>${room.roomAvailability}</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+            booking = `
+                <div class="side-bar-block booking-form-block mt-4">
+                    <h2 class="selected-price">
+                        $${room.roomPrice} 
+                        <span>Per Night</span>
+                    </h2>
+
+                    <div class="booking-form">
+                        <h3>Book This Room</h3>
+                        <p>Choose the number of places and your stay dates</p>
+
+                        <form id="roomBookingForm">
+
+                            <div class="form-group">
+                                <input type="number"
+                                       class="form-control"
+                                       placeholder="Number of places"
+                                       id="bookingPlaces"
+                                       min="1"
+                                       max="${room.roomCapacity}" />
+                                       <span id="capacityError"></span>
+                                       <span id="placesError"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="date"
+                                       class="form-control"
+                                       id="bookingStartDate" />
+                                       <span id="startDateMessage"></span>
+                                       <span id="startDateError"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="date"
+                                       class="form-control"
+                                       id="bookingEndDate" />
+                                       <span id="endDateError"></span>
+                                       <span id="dateError"></span>
+                            </div>
+                            <div>
+                            <span id="datesError"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="text"
+                                       class="form-control"
+                                       value="Room capacity: ${room.roomCapacity}"
+                                       readonly />
+                            </div>
+
+                            <div class="form-group">
+                                <input type="text"
+                                       class="form-control"
+                                       value="Availability: ${room.roomAvailability}"
+                                       readonly />
+                            </div>
+
+                            <div class="col-md-12 text-center mb-3" id="bookingMessage"></div>
+
+                            <button class="btn btn-block btn-orange w-100"
+                                    type="button"
+                                    onclick="confirmRoomBooking()">
+                                Confirm Booking
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `;
+
+            break;
+        }
+    }
+
+    document.getElementById("detailRoom").innerHTML = content + booking;
+    
 }
